@@ -93,6 +93,60 @@ public:
 	{
 		m.marca = nouaMarca;
 	}
+
+	Microfon operator=(const Microfon& c)
+	{
+		if (this != &c)
+		{
+			if (this->colectie != NULL) {
+				delete[]this->colectie;
+			}
+
+			marca = c.marca;
+			stocMicrofoane = c.stocMicrofoane;
+			if (stocMicrofoane != 0) {
+				this->colectie = new int[stocMicrofoane];
+				for (int i = 0; i < stocMicrofoane; i++)
+				{
+					this->colectie[i] = c.colectie[i];
+				}
+			}
+			else this->colectie = NULL;
+		}
+		return *this;
+	}
+
+	friend ostream& operator<<(ostream& out, const Microfon& c)
+	{
+		out << "Marca microfonului este:" << c.marca << endl;
+		out << "Stocul Microfoanelor este:" << c.stocMicrofoane << endl;
+		out << "Id-ul modelului este:" << c.idModel << endl;
+		out << "Colectiile sunt:";
+		for (int i = 0; i < c.stocMicrofoane; i++)
+		{
+			out << c.colectie[i] << "," << endl;
+		}
+		return out;
+	}
+	Microfon operator+(int s)
+	{
+		this->stocMicrofoane = this->stocMicrofoane + s;
+		return *this;
+	}
+	explicit operator float() {
+		float aux = 0;
+		if (stocMicrofoane > 0) {
+			for (int i = 0; i < stocMicrofoane; i++)
+				aux = aux + colectie[i];
+			aux = aux / stocMicrofoane;
+		}
+		return aux;
+	}
+
+
+
+
+
 	~Microfon() {
 		if (this->colectie != NULL) {
 			delete[]this->colectie;
@@ -238,6 +292,52 @@ public:
 		stocInitial = noulStoc;
 	}
 
+
+	Pian& operator+=(int stocNou)
+	{
+		this->stoc += stocNou;
+		return *this;
+	}
+
+	bool operator>(Pian pian) {
+		return this->stoc > pian.stoc;
+	}
+
+	Pian operator=(const Pian& pian)
+	{
+		if (this != &pian)
+		{
+			if (this->colectiePian != NULL) {
+				delete[]this->colectiePian;
+			}
+
+			marcaPian = pian.marcaPian;
+			stoc = pian.stoc;
+			if (stoc != 0) {
+				this->colectiePian = new int[stoc];
+				for (int i = 0; i < stoc; i++)
+				{
+					this->colectiePian[i] = pian.colectiePian[i];
+				}
+			}
+			else this->colectiePian = NULL;
+		}
+		return *this;
+	}
+
+	Pian operator+(int stoc) const {
+		Pian aux = *this;
+		aux.stoc = this->stoc + stoc;
+		return aux;
+	}
+
+	friend Pian operator+(int stoc, const Pian& p) {
+		Pian aux = p;
+		aux.stoc = p.stoc + stoc;
+		return aux;
+	}
+
+
 	~Pian() {
 		if (this->colectiePian != NULL) {
 			delete[]this->colectiePian;
@@ -258,6 +358,7 @@ public:
 		cout << endl;
 	}
 };
+
 
 int Pian::stocInitial = 10;
 
@@ -367,6 +468,73 @@ public:
 		return c.stoc + a;
 	}
 
+	Chitara operator=(const Chitara& p)
+	{
+		if (this != &p)
+		{
+			if (this->nrCorzi != NULL) {
+				delete[]this->nrCorzi;
+			}
+			tipChitara = p.tipChitara;
+			stoc = p.stoc;
+			if (stoc != 0) {
+				this->nrCorzi = new int[stoc];
+				for (int i = 0; i < stoc; i++)
+				{
+					this->nrCorzi[i] = p.nrCorzi[i];
+				}
+			}
+			else this->nrCorzi = NULL;
+
+		}
+
+		return *this;
+	}
+
+	friend istream& operator>>(istream& in, Chitara& chitara) {
+		cout << "tipChitara:electrica";
+		in >> chitara.tipChitara;
+		cout << "stoc:";
+		in >> chitara.stoc;
+		if (chitara.nrCorzi != NULL)
+		{
+			delete[]chitara.nrCorzi;
+		}
+		if (chitara.stoc > 0)
+		{
+			chitara.nrCorzi = new int[chitara.stoc];
+			for (int i = 0; i < chitara.stoc; i++) {
+				cout << "Nr corzilor" << i + 1 << ":";
+				in >> chitara.nrCorzi[i];
+			}
+		}
+		else {
+			cout << "Stocul este 0";
+			chitara.nrCorzi = NULL;
+		}
+		return in;
+	}
+
+	Chitara operator++()
+	{
+		for (int i = 0; i < this->stoc; i++)
+		{
+			this->nrCorzi[i]++;
+		}
+		return *this;
+	}
+
+	Chitara operator++(int)
+	{
+		Chitara aux = *this;
+		for (int i = 0; i < this->stoc; i++)
+		{
+			this->nrCorzi[i]++;
+		}
+		return aux;
+	}
+
+
 	~Chitara()
 	{
 		if (this->nrCorzi != NULL) {
@@ -431,7 +599,14 @@ void main() {
 	Microfon microfon6;
 	microfon6.setNrMicrofoaneSet(4);
 	cout << Microfon::getNrMicrofoaneSet();
+	microfon3 = microfon2;
+	cout << microfon3;
+	microfon2 = microfon2 + 3;
 
+	Microfon microfon7;
+	float medie;
+	medie = (float)microfon7;
+	cout << medie << endl;
 
 	Microfon::actualizeazaNrMicrofoaneSet(4);
 
@@ -463,15 +638,31 @@ void main() {
 
 	Pian pian6;
 	pian6.setStocInitial(10);
-	cout << Pian::getStocInitial();
+	cout << Pian::getStocInitial() << endl;
+	Pian pian7;
+	pian7 += 3;
+	pian7.afisare();
+	/*Pian pian7;
+	pian7 = pian2;
+	pian7.afisare();
+	pian7 = pian2 + 0;
+	pian7.afisare();
+	pian7 = 0 + pian2;
+	*/
+
+	if (pian2 > pian3) {
+		cout << "p2 este mai mare decat p3" << endl;
+	}
+	else
+	{
+		cout << "p2 nu este m ai mare decat p3" << endl;
+	}
+
+	pian3 = pian2;
+
+
 
 	Pian::modificaStoc(15);
-
-
-
-
-
-
 
 
 	int* stoc;
@@ -480,11 +671,12 @@ void main() {
 	Chitara chitara1;
 	chitara1.afisare();
 	Chitara chitara2(21, "electrica", 0, stoc);
+	++chitara2;
 	chitara2.afisare();
 	marireStoc(chitara2, 2);
 	Chitara chitara3(22, "clasica");
 	chitara3.afisare();
-
+	chitara3 = chitara2++;
 	chitara3.setTipChitara("Chitara este");
 	chitara3.setStoc(10);
 	cout << chitara3.getTipChitara() << "." << chitara3.getStoc() << endl;
@@ -503,6 +695,9 @@ void main() {
 	Chitara chitara6;
 	chitara6.setColectie(24);
 	cout << Chitara::getColectie();
+
+	chitara3 = chitara2;
+	cin >> chitara3;
 
 	Chitara::colectieActualizata(24);
 }
