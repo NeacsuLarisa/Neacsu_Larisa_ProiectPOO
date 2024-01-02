@@ -116,6 +116,26 @@ public:
 		return *this;
 	}
 
+	friend istream& operator>>(istream& in, Microfon& c)
+	{
+		if (c.colectie != NULL) {
+			delete[]c.colectie;
+		}
+
+		cout << "Introduceti marca:";
+		in >> c.marca;
+		cout << "Introduceti numarul de microfoane pe stoc:";
+		in >> c.stocMicrofoane;
+		c.colectie = new int[c.stocMicrofoane];
+		for (int i = 0; i < c.stocMicrofoane; i++)
+		{
+			cout << "Introduceti colectia:";
+			in >> c.colectie[i];
+			cout << endl;
+		}
+		return in;
+	}
+
 	friend ostream& operator<<(ostream& out, const Microfon& c)
 	{
 		out << "Marca microfonului este:" << c.marca << endl;
@@ -142,9 +162,6 @@ public:
 		}
 		return aux;
 	}
-
-
-
 
 
 	~Microfon() {
@@ -338,6 +355,36 @@ public:
 	}
 
 
+	friend istream& operator>>(istream& in, Pian& p)
+	{
+		if (p.colectiePian != NULL)
+		{
+			delete[]p.colectiePian;
+		}
+		cout << "Stoc:";
+		in >> p.stoc;
+		cout << "Introduceti marca pianului:";
+		in >> p.marcaPian;
+		p.colectiePian = new int[p.stoc];
+		for (int i = 0; i < p.stoc; i++)
+		{
+			cout << "Introduceti colectia Pianului:";
+			in >> p.colectiePian[i];
+			cout << endl;
+		}
+		return in;
+	}
+
+	friend ostream& operator<<(ostream& out, const Pian& p) {
+		out << "Marca pianului este:" << p.marcaPian << endl;
+		out << "Stoc:" << p.stoc << endl;
+		for (int i = 0; i < p.stoc; i++)
+		{
+			out << p.colectiePian;
+		}
+		return out;
+	}
+
 	~Pian() {
 		if (this->colectiePian != NULL) {
 			delete[]this->colectiePian;
@@ -491,28 +538,34 @@ public:
 		return *this;
 	}
 
-	friend istream& operator>>(istream& in, Chitara& chitara) {
-		cout << "tipChitara:electrica";
-		in >> chitara.tipChitara;
-		cout << "stoc:";
-		in >> chitara.stoc;
-		if (chitara.nrCorzi != NULL)
-		{
-			delete[]chitara.nrCorzi;
+
+	friend istream& operator>>(istream& in, Chitara& m) {
+		if (m.nrCorzi != NULL) {
+			delete[]m.nrCorzi;
 		}
-		if (chitara.stoc > 0)
+		cout << "Stocul este:";
+		in >> m.stoc;
+		cout << "Introduceti tipul chitarii:";
+		in >> m.tipChitara;
+		m.nrCorzi = new int[m.stoc];
+		for (int i = 0; i < m.stoc; i++)
 		{
-			chitara.nrCorzi = new int[chitara.stoc];
-			for (int i = 0; i < chitara.stoc; i++) {
-				cout << "Nr corzilor" << i + 1 << ":";
-				in >> chitara.nrCorzi[i];
-			}
-		}
-		else {
-			cout << "Stocul este 0";
-			chitara.nrCorzi = NULL;
+			cout << "Introduceti numarul de corzi:";
+			in >> m.nrCorzi[i];
+			cout << endl;
 		}
 		return in;
+	}
+
+	friend ostream& operator<<(ostream& out, const Chitara& m)
+	{
+		out << "Tip chitara:" << m.tipChitara << endl;
+		out << "Stoc:" << m.stoc << endl;
+		for (int i = 0; i < m.stoc; i++)
+		{
+			out << m.nrCorzi[i];
+		}
+		return out;
 	}
 
 	Chitara operator++()
@@ -577,7 +630,6 @@ void main() {
 	microfon2.afisare();
 	Microfon microfon3(22, "Audio");
 	microfon3.afisare();
-
 	microfon3.setMarca("Shure");
 	microfon3.setStocMicrofoane(5);
 	cout << microfon3.getMarca() << "." << microfon3.getStocMicrofoane() << endl;
@@ -607,6 +659,35 @@ void main() {
 	float medie;
 	medie = (float)microfon7;
 	cout << medie << endl;
+
+	Microfon* microfon = new Microfon[3];
+	for (int i = 0; i < 3; i++)
+		cin >> microfon[i];
+	for (int i = 0; i < 3; i++)
+		cout << microfon[i];
+
+	Microfon** matrice = new Microfon * [2];
+	for (int i = 0; i < 2; i++)
+	{
+		matrice[i] = new Microfon[2];
+	}
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 2; j++) {
+			cout << "Citeste Matricea:";
+			cin >> matrice[i][j];
+		}
+	}
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 2; j++) {
+			cout << matrice[i][j];
+		}
+		cout << endl;
+	}
+
+	for (int i = 0; i < 2; i++) {
+		delete[]matrice[i];
+	}
+	delete[]matrice;
 
 	Microfon::actualizeazaNrMicrofoaneSet(4);
 
@@ -660,6 +741,11 @@ void main() {
 
 	pian3 = pian2;
 
+	Pian* pian = new Pian[3];
+	for (int i = 0; i < 3; i++)
+		cin >> pian[i];
+	for (int i = 0; i < 3; i++)
+		cout << pian[i];
 
 
 	Pian::modificaStoc(15);
@@ -697,7 +783,13 @@ void main() {
 	cout << Chitara::getColectie();
 
 	chitara3 = chitara2;
-	cin >> chitara3;
+
+
+	Chitara* chitara = new Chitara[3];
+	for (int i = 0; i < 3; i++)
+		cin >> chitara[i];
+	for (int i = 0; i < 3; i++)
+		cout << chitara[i];
 
 	Chitara::colectieActualizata(24);
 }
