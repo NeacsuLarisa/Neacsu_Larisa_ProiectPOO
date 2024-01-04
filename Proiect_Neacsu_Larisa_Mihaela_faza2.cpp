@@ -471,7 +471,7 @@ public:
 		this->stoc = 14;
 		this->nrCorzi = NULL;
 	}
-	Chitara(int idModel, string tipChitara, int stoc, int* nrCorzi) :idModel(idModel), tipChitara(tipChitara), nrCorzi(nrCorzi)
+	Chitara(int idModel, string tipChitara, int stoc, int* nrCorzi) :idModel(idModel), tipChitara(tipChitara), stoc(stoc), nrCorzi(nrCorzi)
 	{
 		if (stoc != 0) {
 			this->nrCorzi = new int[stoc];
@@ -614,6 +614,140 @@ public:
 
 };
 int Chitara::colectie = 2023;
+
+class Depozit {
+public:
+	string numeStrada;
+	Microfon* colectie;
+	int stoc;
+	int* nrCutii;
+
+	Depozit() {
+		this->numeStrada = "Mihai Eminescu";
+		this->stoc = 10;
+		this->colectie = new Microfon();
+		this->nrCutii = NULL;
+	}
+
+	Depozit(string numeStrada, Microfon* colectie, int stoc, int* nrCutii) {
+		this->numeStrada = numeStrada;
+		this->stoc = stoc;
+		this->nrCutii = new int[this->stoc];
+		for (int i = 0; i < this->stoc; i++)
+		{
+			this->nrCutii[i] = nrCutii[i];
+		}
+		this->colectie = new Microfon();
+		*(this->colectie) = *(colectie);
+	}
+
+	Depozit(const Depozit& d)
+	{
+		this->numeStrada = d.numeStrada;
+		this->stoc = d.stoc;
+		this->nrCutii = new int[this->stoc];
+		for (int i = 0; i < this->stoc; i++)
+		{
+			this->nrCutii[i] = d.nrCutii[i];
+		}
+		this->colectie = new Microfon();
+		*(this->colectie) = *(d.colectie);
+	}
+
+	string getNumeStrada()
+	{
+		return this->numeStrada;
+	}
+	int getStoc()
+	{
+		return this->stoc;
+	}
+	int* getNrCutii()
+	{
+		return this->nrCutii;
+	}
+	Microfon* getColectie()
+	{
+		return this->colectie;
+	}
+
+	void setNumeStrada(string numeStrada) {
+		this->numeStrada = numeStrada;
+	}
+	void setStoc(int stoc) {
+		this->stoc = stoc;
+	}
+	void setNrCutii(int stoc, int* nrCutii) {
+		if (this->nrCutii != NULL)
+		{
+			delete[]this->nrCutii;
+		}
+		this->stoc = stoc;
+		this->nrCutii = new int[this->stoc];
+		for (int i = 0; i < this->stoc; i++)
+		{
+			this->nrCutii[i] = nrCutii[i];
+		}
+
+	}
+	void setColectie(Microfon* colectie) {
+		if (this->colectie != NULL)
+		{
+			delete[] this->colectie;
+		}
+		this->colectie = new Microfon();
+		*(this->colectie) = *(colectie);
+	}
+
+	Depozit& operator=(const Depozit& d)
+	{
+		if (this != &d)
+		{
+			if (this->nrCutii != NULL)
+			{
+				delete[]this->nrCutii;
+			}
+			this->numeStrada = d.numeStrada;
+			this->stoc = d.stoc;
+			this->nrCutii = new int[this->stoc];
+			for (int i = 0; i < this->stoc; i++)
+			{
+				this->nrCutii[i] = d.nrCutii[i];
+			}
+			this->colectie = new Microfon();
+			*(this->colectie) = *(d.colectie);
+		}
+		return *this;
+	}
+
+	friend ostream& operator<<(ostream& out, const Depozit& d) {
+		out << "Numele strazii unde se afla depozitul este:" << d.numeStrada << endl;
+		out << "Stocul este:" << d.stoc << endl;
+		out << "Colectie microfonului este:" << d.colectie << endl;
+		for (int i = 0; i < d.stoc; i++)
+		{
+			out << d.nrCutii;
+		}
+		return out;
+	}
+	Depozit operator+(int stoc)const {
+		Depozit aux = *this;
+		aux.stoc = this->stoc + stoc;
+		return aux;
+	}
+
+	void afisare()
+	{
+		cout << "Depozitul se afla pe strada:" << numeStrada << "." << " Afisarea stocurilor este : " << stoc << "." << endl;
+	}
+	~Depozit() {
+		if (this->nrCutii != NULL)
+		{
+			delete[]this->nrCutii;
+		}
+	}
+};
+
 
 
 
@@ -792,4 +926,34 @@ void main() {
 		cout << chitara[i];
 
 	Chitara::colectieActualizata(24);
+
+	Depozit d1;
+	d1.afisare();
+	int* nrCutii = new int[2];
+	nrCutii[0] = 10;
+	nrCutii[1] = 15;
+	Microfon* colectieD = new Microfon();
+	Depozit d2("Dinu Lipatti", colectieD, 2, nrCutii);
+	d2.afisare();
+	Depozit d3 = d2;
+
+	d2.setNumeStrada("Mihai Bravu");
+	d2.setStoc(2);
+	cout << d2.getNumeStrada() << "." << d2.getStoc() << endl;
+	int stocD[] = { 1,2 };
+	d2.setNrCutii(2, stocD);
+	for (int i = 0; i < d2.getNrCutii()[i]; i++)
+	{
+		cout << d2.getNrCutii()[i] << ",";
+	}
+	cout << endl;
+
+
+	Microfon* colectie2 = new Microfon();
+	d2.setColectie(colectie2);
+	cout << d2.getColectie() << endl;
+
+	d2 = d3;
+	d2 = d1 + 1;
+	cout << d2;
 }
