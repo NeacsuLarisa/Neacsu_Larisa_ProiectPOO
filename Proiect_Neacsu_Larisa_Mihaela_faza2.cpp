@@ -2,6 +2,7 @@
 
 #include<iostream>
 #include<string>
+#include<fstream>
 using namespace std;
 
 class Microfon {
@@ -58,7 +59,7 @@ public:
 		this->stocMicrofoane = 0;
 		this->colectie = NULL;
 	}
-	Microfon(int idModelNou, string marca) :idModel(idModelNou)
+	Microfon(int idModel, string marca) :idModel(idModel)
 	{
 		this->marca = marca;
 		this->stocMicrofoane = 0;
@@ -148,6 +149,24 @@ public:
 		}
 		return out;
 	}
+	friend ofstream& operator<<(ofstream& fis, const Microfon& microfon) {
+		fis << microfon.idModel << endl << microfon.marca << endl;
+		return fis;
+	}
+
+	friend ifstream& operator>>(ifstream& fis1, Microfon& microfon) {
+		fis1 >> microfon.stocMicrofoane;
+		fis1 >> microfon.marca;
+		if (microfon.colectie != NULL) {
+			delete[]microfon.colectie;
+		}
+		microfon.colectie = new int[microfon.stocMicrofoane];
+		for (int i = 0; i < microfon.stocMicrofoane; i++)
+			fis1 >> microfon.colectie[i];
+		return fis1;
+	}
+
+
 	Microfon operator+(int s)
 	{
 		this->stocMicrofoane = this->stocMicrofoane + s;
@@ -385,6 +404,30 @@ public:
 		return out;
 	}
 
+	friend ofstream& operator<<(ofstream& fis2, const Pian& pian) {
+		fis2 << pian.marcaPian << endl << pian.stoc << endl;
+		if (pian.colectiePian != NULL) {
+			for (int i = 0; i < pian.stoc; i++) {
+				fis2 << pian.colectiePian[i] << " ";
+			}
+		}
+		fis2 << endl;
+		return fis2;
+	}
+
+
+	friend ifstream& operator>>(ifstream& fis3, Pian& pian) {
+		fis3 >> pian.stoc;
+		fis3 >> pian.marcaPian;
+		if (pian.colectiePian != NULL) {
+			delete[]pian.colectiePian;
+		}
+		pian.colectiePian = new int[pian.stoc];
+		for (int i = 0; i < pian.stoc; i++)
+			fis3 >> pian.colectiePian[i];
+		return fis3;
+	}
+
 	~Pian() {
 		if (this->colectiePian != NULL) {
 			delete[]this->colectiePian;
@@ -465,7 +508,7 @@ public:
 		this->stoc = 10;
 		this->nrCorzi = NULL;
 	}
-	Chitara(int idModelNou, string tipChitara) : idModel(idModelNou)
+	Chitara(int idModel, string tipChitara) : idModel(idModel)
 	{
 		this->tipChitara = tipChitara;
 		this->stoc = 14;
@@ -568,6 +611,16 @@ public:
 		return out;
 	}
 
+	void scrieInFisierBinar(fstream& f) {
+		f.write((char*)&this->stoc, sizeof(int));
+		f.write((char*)&this->tipChitara, sizeof(string));
+		//f.write((char*)&this->idModel, sizeof(const int));
+	}
+
+	void citesteDinFisierBinar(fstream& f) {
+		f.read((char*)&this->stoc, sizeof(int));
+		f.read((char*)&this->tipChitara, sizeof(string));
+	}
 	Chitara operator++()
 	{
 		for (int i = 0; i < this->stoc; i++)
@@ -641,6 +694,21 @@ public:
 		*(this->colectie) = *(colectie);
 	}
 
+	void scrieInFisierBinar(fstream& f) {
+		f.write((char*)&this->stoc, sizeof(int));
+		f.write((char*)&this->numeStrada, sizeof(string));
+		for (int i = 0; i < this->stoc; i++) {
+			f.write((char*)&this->nrCutii, sizeof(int));
+		}
+	}
+
+	void citesteDinFisierBinar(fstream& f) {
+		f.read((char*)&this->stoc, sizeof(int));
+		f.read((char*)&this->numeStrada, sizeof(string));
+		for (int i = 0; i < this->stoc; i++) {
+			f.write((char*)&this->nrCutii, sizeof(int));
+		}
+	}
 	Depozit(const Depozit& d)
 	{
 		this->numeStrada = d.numeStrada;
@@ -730,6 +798,10 @@ public:
 		}
 		return out;
 	}
+
+
+
+
 	Depozit operator+(int stoc)const {
 		Depozit aux = *this;
 		aux.stoc = this->stoc + stoc;
@@ -956,4 +1028,37 @@ void main() {
 	d2 = d3;
 	d2 = d1 + 1;
 	cout << d2;
+
+	Microfon microfon8(5, "Shure");
+	ofstream fis("fisier.txt", ios::out);
+	fis << microfon8;
+	ifstream fis1("fisier.txt", ios::in);
+	fis1 >> microfon8;
+
+	Pian pian8;
+	ofstream fis2("fisier.txt", ios::out);
+	fis2 << pian8;
+	ifstream fis3("fisier.txt", ios::in);
+	fis3 >> pian8;
+	cout << pian8;
+
+	Chitara c8(8, "electrica");
+	fstream fisier("fisier.txt", ios::out | ios::binary);
+	fisier.write((char*)&c8, sizeof(c8));
+	fisier.close();
+	fstream fisier1("fisier.txt", ios::in | ios::binary);
+	fisier1.read((char*)&c8, sizeof(c8));
+	cout << c8;
+
+	Depozit d;
+	fstream fisier2("fisier.txt", ios::out | ios::binary);
+	fisier2.write((char*)&d, sizeof(d));
+	d.scrieInFisierBinar(fisier2);
+	fisier2.close();
+	fstream fisier3("fisier.txt", ios::in | ios::binary);
+	fisier3.read((char*)&d, sizeof(d));
+	d.citesteDinFisierBinar(fisier3);
+	cout << d;
+	fisier3.close();
+
 }
