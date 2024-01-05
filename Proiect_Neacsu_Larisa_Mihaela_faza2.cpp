@@ -209,7 +209,7 @@ public:
 	{
 		if (nrMicrofoane > 5)
 		{
-			cout << "Numarul microfoanelor este gresit" << ".";
+			cout << "Numarul microfoanelor este corect" << ".";
 		}
 		else
 			cout << "Numarul microfoanelor este gresit si trebuie actualizat:" << ".";
@@ -434,7 +434,7 @@ public:
 		}
 	}
 
-	void afisare() {
+	void afisare1() {
 		cout << idModel << "." << "marca:" << marcaPian << "." << " stocInitial:" << stocInitial << "." << "stoc" << stoc << "." << "colectiePian:";
 		if (colectiePian != NULL)
 		{
@@ -648,7 +648,7 @@ public:
 		}
 	}
 
-	void afisare()
+	void afisare2()
 	{
 
 		cout << idModel << "." << "tipChitara:" << tipChitara << "." << "colectie:" << colectie << "." << "nrCorzi" << stoc << "." << "stoc:";
@@ -820,7 +820,186 @@ public:
 	}
 };
 
+class ComenziOnlineMicrofon :public Microfon {
+private:
+	int nrComenzi;
+	float valoareComanda;
+	bool livrare;
+	string* numeClient;
+public:
 
+	ComenziOnlineMicrofon() :Microfon(1678, "Sennheiser", 15, NULL) {
+		this->nrComenzi = 6;
+		this->valoareComanda = 765.5;
+		this->livrare = true;
+		this->numeClient = NULL;
+	}
+	ComenziOnlineMicrofon(int nrComenzi, float valoareComanda, bool livrare, string* numeClient) :Microfon() {
+		this->nrComenzi = nrComenzi;
+		this->valoareComanda = valoareComanda;
+		this->livrare = livrare;
+		this->numeClient = new string[nrComenzi];
+		for (int i = 0; i < nrComenzi; i++) {
+			this->numeClient[i] = numeClient[i];
+		}
+
+	}
+
+	ComenziOnlineMicrofon(const ComenziOnlineMicrofon& g) :Microfon(g) {
+		this->nrComenzi = g.nrComenzi;
+		this->valoareComanda = g.valoareComanda;
+		this->livrare = g.livrare;
+		this->numeClient = new string[nrComenzi];
+		for (int i = 0; i < nrComenzi; i++) {
+			this->numeClient[i] = g.numeClient[i];
+		}
+	}
+	ComenziOnlineMicrofon& operator=(const ComenziOnlineMicrofon& g) {
+		if (this != &g) {
+			if (this->numeClient != NULL) {
+				delete[]this->numeClient;
+			}
+			this->nrComenzi = g.nrComenzi;
+			this->valoareComanda = g.valoareComanda;
+			this->livrare = g.livrare;
+			this->numeClient = new string[nrComenzi];
+			for (int i = 0; i < nrComenzi; i++) {
+				this->numeClient[i] = g.numeClient[i];
+			}
+		}
+		return *this;
+	}
+
+	int getNrComenzi() {
+		return this->nrComenzi;
+	}
+	float getValoareComanda() {
+		return this->valoareComanda;
+	}
+	bool getLivrare() {
+		return this->livrare;
+	}
+	string* getNumeClient() {
+		return this->numeClient;
+	}
+
+	void setNrComenzi(int nrComenzi) {
+		this->nrComenzi = nrComenzi;
+	}
+	void setValoareComanda(float valoareComanda) {
+		this->valoareComanda = valoareComanda;
+	}
+
+	void setLivrare(bool livrare) {
+		this->livrare = livrare;
+	}
+
+	void setNumeClient(string* numeClient) {
+		this->numeClient = numeClient;
+	}
+
+	void afisare() {
+		cout << "Nr total de comenzi este:" << nrComenzi << "." << "Valoare comenzii este de:" << valoareComanda << "." << "Livrarea se face la domiciliu:" << livrare << "." << "Numele clientului este";
+		if (nrComenzi != NULL)
+		{
+			for (int i = 0; i < nrComenzi; i++) {
+				cout << numeClient[i] << ",";
+			}
+		}
+		else {
+			cout << "-";
+		}
+		cout << endl;
+	}
+
+
+	~ComenziOnlineMicrofon() {
+		if (this->numeClient != NULL) {
+			delete[]this->numeClient;
+		}
+
+	}
+
+};
+
+
+class PianDigital :public Pian {
+private:
+	int stocPianDigital;
+	string marcaPianDigital;
+	char* depozit;
+
+public:
+	PianDigital() :Pian(2987, "Yamaha", 5, NULL) {
+		this->stocPianDigital = 2;
+		this->marcaPianDigital = "Yamaha";
+		this->depozit = new char[strlen("B") + 1];
+		strcpy_s(this->depozit, strlen("B") + 1, "B");
+	}
+
+	PianDigital(int stocPianDigital, string marcaPianDigital, char* depozit) :Pian() {
+		this->stocPianDigital = stocPianDigital;
+		this->marcaPianDigital = marcaPianDigital;
+		this->depozit = new char[strlen(depozit) + 1];
+		strcpy_s(this->depozit, strlen(depozit) + 1, depozit);
+	}
+
+	PianDigital(const PianDigital& z) :Pian(z) {
+		this->stocPianDigital = z.stocPianDigital;
+		this->marcaPianDigital = z.marcaPianDigital;
+		this->depozit = new char[strlen(z.depozit) + 1];
+		strcpy_s(this->depozit, strlen(z.depozit) + 1, z.depozit);
+	}
+
+	PianDigital& operator=(const PianDigital& z) {
+		if (this != &z) {
+			if (this->depozit != NULL) {
+				delete[]this->depozit;
+			}
+			this->stocPianDigital = z.stocPianDigital;
+			this->marcaPianDigital = z.marcaPianDigital;
+			this->depozit = new char[strlen(z.depozit) + 1];
+			strcpy_s(this->depozit, strlen(z.depozit) + 1, z.depozit);
+		}
+		return *this;
+	}
+
+	int getStocPianDigital()
+	{
+		return this->stocPianDigital;
+	}
+	string getMarcaPianDigital() {
+		return this->marcaPianDigital;
+	}
+	char* getDepozit() {
+		return this->depozit;
+	}
+
+	void setStocPianDigital(int stocPianDigital) {
+		this->stocPianDigital;
+	}
+	void setMarcaPianDigital(string marcaPianDigital) {
+		this->marcaPianDigital;
+	}
+	void setDepozit(const char* depozit) {
+		if (this->depozit != NULL) {
+			delete[]this->depozit;
+		}
+		this->depozit = new char[strlen(depozit) + 1];
+		strcpy_s(this->depozit, strlen(depozit) + 1, depozit);
+	}
+
+	void afisarePianDigital() {
+		cout << "Stoc pian digital:" << this->stocPianDigital << "." << "Marca pian digital:" << this->marcaPianDigital << "." << "Depozitul in care se afla este:" << depozit << endl;
+	}
+
+
+	~PianDigital() {
+		if (this->depozit != NULL) {
+			delete[]this->depozit;
+		}
+	}
+};
 
 
 
@@ -902,11 +1081,11 @@ void main() {
 	colectiePian[0] = 23;
 	colectiePian[1] = 22;
 	Pian pian1;
-	pian1.afisare();
+	pian1.afisare1();
 	Pian pian2(21, "Yamaha", 2, colectiePian);
-	pian2.afisare();
+	pian2.afisare1();
 	Pian pian3(22, "Korg");
-	pian3.afisare();
+	pian3.afisare1();
 
 	pian3.setMarcaPian("Roland");
 	pian3.setStoc(10);
@@ -921,14 +1100,14 @@ void main() {
 	cout << endl;
 	Pian pian4(pian2);
 	Pian pian5(pian4);
-	pian5.afisare();
+	pian5.afisare1();
 
 	Pian pian6;
 	pian6.setStocInitial(10);
 	cout << Pian::getStocInitial() << endl;
 	Pian pian7;
 	pian7 += 3;
-	pian7.afisare();
+	pian7.afisare1();
 	/*Pian pian7;
 	pian7 = pian2;
 	pian7.afisare();
@@ -961,13 +1140,13 @@ void main() {
 	stoc = new int[1];
 	stoc[0] = 5;
 	Chitara chitara1;
-	chitara1.afisare();
+	chitara1.afisare2();
 	Chitara chitara2(21, "electrica", 0, stoc);
 	++chitara2;
-	chitara2.afisare();
+	chitara2.afisare2();
 	marireStoc(chitara2, 2);
 	Chitara chitara3(22, "clasica");
-	chitara3.afisare();
+	chitara3.afisare2();
 	chitara3 = chitara2++;
 	chitara3.setTipChitara("Chitara este");
 	chitara3.setStoc(10);
@@ -982,7 +1161,7 @@ void main() {
 	cout << endl;
 	Chitara chitara4(chitara2);
 	Chitara chitara5(chitara4);
-	chitara5.afisare();
+	chitara5.afisare2();
 
 	Chitara chitara6;
 	chitara6.setColectie(24);
@@ -1060,5 +1239,47 @@ void main() {
 	d.citesteDinFisierBinar(fisier3);
 	cout << d;
 	fisier3.close();
+
+	string* numeClient;
+	numeClient = new string[2];
+	numeClient[0] = "Maria V";
+	numeClient[1] = "Isabela D";
+	ComenziOnlineMicrofon g;
+	g.afisare();
+	ComenziOnlineMicrofon g1(2, 500, true, numeClient);
+	g1.afisare();
+	g1 = g;
+	ComenziOnlineMicrofon g2 = g1;
+
+	g1.setNrComenzi(2);
+	g1.setValoareComanda(550.5);
+	g1.setLivrare(true);
+	g1.setNumeClient(numeClient);
+
+	cout << g1.getNrComenzi() << "." << g1.getValoareComanda() << "." << g1.getLivrare() << endl;
+	for (int i = 0; i < g1.getNrComenzi(); i++) {
+		cout << g1.getNumeClient()[i] << ",";
+	}
+	cout << endl;
+
+	PianDigital pianDigital;
+	pianDigital.afisarePianDigital();
+
+	;
+	char* depozit = new char[strlen("A") + 1];
+	strcpy_s(depozit, strlen("A") + 1, "A");
+	PianDigital pianDigital1(2, "Roland", depozit);
+	pianDigital1.afisarePianDigital();
+
+	pianDigital1.setStocPianDigital(10);
+	pianDigital1.setMarcaPianDigital("Yamaha");
+	pianDigital1.setDepozit(depozit);
+
+	cout << pianDigital1.getStocPianDigital() << endl;
+	cout << pianDigital1.getMarcaPianDigital() << endl;
+	cout << pianDigital1.getDepozit() << endl;
+
+	pianDigital = pianDigital1;
+	PianDigital pianDigital2 = pianDigital1;
 
 }
